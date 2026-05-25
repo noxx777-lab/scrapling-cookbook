@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrapling Cookbook — 23 Ready-to-Use Web Scraping Recipes</title>
+<meta name="description" content="Stop writing selectors from scratch. Drop these 23 pre-built Scrapling recipes into your project and start extracting data in 30 seconds.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117;
+    --bg-card: #161b22;
+    --bg-elevated: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --accent-green: #3fb950;
+    --accent-orange: #d2991d;
+    --accent-purple: #bc8cff;
+    --accent-red: #f85149;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+    --font-mono: 'SFMono-Regular', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* Nav */
+  nav {
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    position: sticky; top: 0; z-index: 100;
+  }
+  nav .container { display: flex; align-items: center; justify-content: space-between; }
+  nav .logo { font-weight: 700; font-size: 18px; color: var(--accent); }
+  nav .logo span { color: var(--text); }
+  nav a { color: var(--text-muted); text-decoration: none; margin-left: 24px; font-size: 14px; transition: color .15s; }
+  nav a:hover { color: var(--text); }
+
+  /* Hero */
+  .hero { padding: 80px 0 60px; text-align: center; }
+  .hero h1 { font-size: 48px; font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
+  .hero h1 .gradient { background: linear-gradient(135deg, var(--accent), var(--accent-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { font-size: 20px; color: var(--text-muted); max-width: 650px; margin: 0 auto 32px; }
+  .hero .cta { display: inline-flex; gap: 12px; }
+  .btn {
+    display: inline-block; padding: 12px 28px; border-radius: 8px;
+    font-weight: 600; font-size: 15px; text-decoration: none; cursor: pointer;
+    border: 1px solid var(--border); transition: all .15s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { background: #4c9cf0; }
+  .btn-secondary { background: var(--bg-elevated); color: var(--text); }
+  .btn-secondary:hover { background: #30363d; }
+
+  /* Stats */
+  .stats { padding: 40px 0 60px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center; }
+  .stat-num { font-size: 36px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Section headers */
+  .section { padding: 60px 0; }
+  .section-header { text-align: center; margin-bottom: 48px; }
+  .section-header h2 { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+  .section-header p { color: var(--text-muted); font-size: 17px; }
+
+  /* Recipe catalog */
+  .category { margin-bottom: 40px; }
+  .category h3 { font-size: 18px; font-weight: 600; padding-bottom: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .recipe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .recipe-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px; display: flex; align-items: center; gap: 12px;
+    transition: border-color .15s, transform .15s;
+  }
+  .recipe-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .recipe-icon { font-size: 22px; width: 28px; text-align: center; flex-shrink: 0; }
+  .recipe-info { min-width: 0; }
+  .recipe-name { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .recipe-file { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); }
+  .category-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 12px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: rgba(63,185,80,.15); color: var(--accent-green); }
+  .badge-blue { background: rgba(88,166,255,.15); color: var(--accent); }
+  .badge-orange { background: rgba(210,153,29,.15); color: var(--accent-orange); }
+  .badge-purple { background: rgba(188,140,255,.15); color: var(--accent-purple); }
+
+  /* Code example */
+  .code-section { padding: 60px 0; }
+  pre {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px 32px; overflow-x: auto; font-family: var(--font-mono); font-size: 14px;
+    line-height: 1.7;
+  }
+  .code-comment { color: var(--text-muted); }
+  .code-keyword { color: var(--accent-red); }
+  .code-func { color: var(--accent-purple); }
+  .code-string { color: var(--accent-green); }
+  .code-attr { color: var(--accent); }
+
+  /* Products section */
+  .products { padding: 60px 0; background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .product-card {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+    padding: 32px 28px; text-align: center; transition: border-color .15s;
+  }
+  .product-card:hover { border-color: var(--accent); }
+  .product-icon { font-size: 40px; margin-bottom: 16px; }
+  .product-name { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .product-price { font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 12px; }
+  .product-price small { font-size: 14px; font-weight: 400; color: var(--text-muted); }
+  .product-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
+  .product-card .status {
+    display: inline-block; padding: 4px 12px; border-radius: 12px;
+    font-size: 12px; font-weight: 600; background: rgba(248,81,73,.15); color: var(--accent-red);
+  }
+
+  /* Footer */
+  footer { padding: 48px 0; text-align: center; border-top: 1px solid var(--border); }
+  footer p { color: var(--text-muted); font-size: 14px; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 32px; }
+    .hero p { font-size: 17px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .product-grid { grid-template-columns: 1fr; }
+    .recipe-grid { grid-template-columns: 1fr; }
+    .code-section pre { font-size: 12px; padding: 16px; }
+    nav a { margin-left: 12px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container">
+    <a href="#" class="logo">Scrapling<span>Cookbook</span></a>
+    <div>
+      <a href="#recipes">Recipes</a>
+      <a href="#examples">Examples</a>
+      <a href="#products">Products</a>
+      <a href="https://github.com/noxx777-lab/scrapling-cookbook">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <h1>23 <span class="gradient">Scraping Recipes</span><br>Ready in 30 Seconds</h1>
+    <p>Stop reverse-engineering HTML for every website. Drop these pre-built, adaptive Scrapling recipes into your project and extract data immediately. No more broken selectors.</p>
+    <div class="cta">
+      <a href="#recipes" class="btn btn-primary">Browse Recipes</a>
+      <a href="#examples" class="btn btn-secondary">See Examples</a>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div><div class="stat-num">23</div><div class="stat-label">Ready-to-Use Recipes</div></div>
+      <div><div class="stat-num">8</div><div class="stat-label">Site Categories</div></div>
+      <div><div class="stat-num">30s</div><div class="stat-label">To First Extraction</div></div>
+      <div><div class="stat-num">3</div><div class="stat-label">Lines of Code to Run</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Recipe Catalog -->
+<section class="section" id="recipes">
+  <div class="container">
+    <div class="section-header">
+      <h2>The Full Recipe Catalog</h2>
+      <p>Every recipe uses Scrapling's adaptive selectors — they survive website redesigns. One file per site, zero dependencies beyond Scrapling + Playwright.</p>
+    </div>
+
+    <!-- E-Commerce -->
+    <div class="category">
+      <h3>🛒 E-Commerce</h3>
+      <div class="recipe-grid">
+        <div class="recipe-card"><div class="recipe-icon">📦</div><div class="recipe-info"><div class="recipe-name">Amazon Product</div><div class="recipe-file">amazon_product.py</div></div><span class="category-badge badge-green">title, price, rating, reviews</span></div>
+        <div class="recipe-card"><div class="recipe-icon">🛍️</div><div class="recipe-info"><div class="recipe-name">eBay Listing</div><div class="recipe-file">ebay_listing.py</div></div><span class="category-badge badge-green">title, price, condition, seller</span></div>
+        <div class="recipe-card"><div class="recipe-icon">🏪</div><div class="recipe-info"><div class="recipe-name">Shopify Store</div><div class="recipe-file">shopify_store.py</div></div><span class="category-badge badge-green">products, collections, prices</span></div>
+      </div>
+    </div>
+
+    <!-- Social Media -->
+    <div class="category">
+      <h3>📱 Social Media</h3>
+      <div class="recipe-grid">
+        <div class="recipe-card"><div class="recipe-icon">🔴</div><div class="recipe-info"><div class="recipe-name">Reddit Posts</div><div class="recipe-file">reddit_posts.py</div></div><span class="category-badge badge-orange">title, score, comments, author</span></div>
+        <div class="recipe-card"><div class="recipe-icon">𝕏</div><div class="recipe-info"><div class="recipe-name">Twitter / X Profile</div><div class="recipe-file">twitter_profile.py</div></div><span class="category-badge badge-blue">bio, followers, following</span></div>
+        <div class="recipe-card"><div class="recipe-icon">📸</div><div class="recipe-info"><div class="recipe-name">Instagram Profile</div><div class="recipe-file">instagram_profile.py</div></div><span class="category-badge badge-purple">bio, followers, posts</span></div>
+        <div class="recipe-card"><div class="recipe-icon">📰</div><div class="recipe-info"><div class="recipe-name">Hacker News</div><div class="recipe-file">hackernews.py</div></div><span class="category-badge badge-orange">title, points, comments</span></div>
+        <div class="recipe-card"><div class="recipe-icon">🚀</div><div class="recipe-info"><div class="recipe-name">ProductHunt</div><div class="recipe-file">producthunt.py</div></div><span class="category-badge badge-orange">upvotes, makers, tagline</span></div>
+      </div>
+    </div>
+
+    <!-- Business Data -->
+    <div class="category">
+      <h3>🏢 Business Data</h3>
+      <div class="recipe-grid">
+        <div class="recipe-card"><div class="recipe-icon">⭐</div><div class="recipe-info"><div class="recipe-name">Yelp Business</div><div class="recipe-file">yelp_business.py</div></div><span class="category-badge badge-green">rating, reviews, hours, address</span></div>
+        <div class="recipe-card"><div class="recipe-icon">🗺️</div><div class="recipe-info"><div class="recipe-name">Google Maps</div><div class="recipe-file">google_maps.py</div></div><span class="category-badge badge-green">places, ratings, reviews, phone</span></div>
+        <div class="recipe-card"><div class="recipe-icon">🛡️</div><div class="recipe-info"><div class="recipe-name">Trustpilot</div><div class="recipe-file">trustpilot.py</div></div><span class="category-badge badge-green">rating, reviews, company info</span></div>
+        <div class="recipe-card"><div class="recipe-icon">💼</div><div class="recipe-info"><div class="recipe-name">Glassdoor</div><div class="recipe-file">glassdoor.py</div></div><span class="category-badge badge-blue">rating, salary, CEO approval</span></div>
+        <div class="recipe-card"><div class="recipe-icon">⭐</div><div class="recipe-info"><div class="recipe-name">G2 Reviews</div><div class="recipe-file">g2_reviews.py</div></div><span class="category-badge badge-blue">rating, pros/cons, pricing</span></div>
+      </div>
+    </div>
+
+    <!-- Jobs -->
+    <div class="category">
+      <h3>💼 Jobs & Career</h3>
+      <div class="recipe-grid">
+        <div class="recipe-card"><div class="recipe-icon">🔗</div><div class="recipe-info"><div class="recipe-name">LinkedIn Profile</div><div class="recipe-file">linkedin_profile.py</div></div><span class="category-badge badge-blue">name, headline, about, company</span></div>
+        <div class="recipe-card"><div class="recipe-icon">💼</div><div class="recipe-info"><div class="recipe-name">Indeed Jobs</div><div class="recipe-file">indeed_jobs.py</div></div><span class="category-badge badge-blue">title, salary, company, location</span></div>
+      </div>
+    </div>
+
+    <!-- Real Estate -->
+    <div class="category">
+      <h3>🏠 Real Estate</h3>
+      <div class="recipe-grid">
+        <div class="recipe-card"><div class="recipe-icon">🏡</div><div class="recipe-info"><div class="recipe-name">Zillow</div><div class="recipe-file">zillow.py</div></div><span class="category-badge badge-purple">price, beds, baths, sqft</span></div>
+      </div>
+    </div>
+
+    <!-- Developer -->
+    <div class="category">
+      <h3>💻 Developer</h3>
+      <div class="recipe-grid">
+        <div class="recipe-card"><div class="recipe-icon">🐙</div><div class="recipe-info"><div class="recipe-name">GitHub Repo</div><div class="recipe-file">github_repo.py</div></div><span class="category-badge badge-green">stars, forks, language, about</span></div>
+        <div class="recipe-card"><div class="recipe-icon">🟧</div><div class="recipe-info"><div class="recipe-name">Stack Overflow</div><div class="recipe-file">stackoverflow.py</div></div><span class="category-badge badge-orange">question, answers, tags, votes</span></div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="category">
+      <h3>📄 Content & Media</h3>
+      <div class="recipe-grid">
+        <div class="recipe-card"><div class="recipe-icon">📚</div><div class="recipe-info"><div class="recipe-name">Wikipedia</div><div class="recipe-file">wikipedia.py</div></div><span class="category-badge badge-green">title, summary, infobox, sections</span></div>
+        <div class="recipe-card"><div class="recipe-icon">📝</div><div class="recipe-info"><div class="recipe-name">Medium Article</div><div class="recipe-file">medium_article.py</div></div><span class="category-badge badge-blue">title, author, claps, tags</span></div>
+        <div class="recipe-card"><div class="recipe-icon">▶️</div><div class="recipe-info"><div class="recipe-name">YouTube Video</div><div class="recipe-file">youtube_video.py</div></div><span class="category-badge badge-red">title, views, likes, channel</span></div>
+      </div>
+    </div>
+
+    <!-- Finance -->
+    <div class="category">
+      <h3>💰 Finance & Data</h3>
+      <div class="recipe-grid">
+        <div class="recipe-card"><div class="recipe-icon">🪙</div><div class="recipe-info"><div class="recipe-name">CoinMarketCap</div><div class="recipe-file">coinmarketcap.py</div></div><span class="category-badge badge-orange">price, market cap, volume</span></div>
+        <div class="recipe-card"><div class="recipe-icon">🏢</div><div class="recipe-info"><div class="recipe-name">Crunchbase</div><div class="recipe-file">crunchbase.py</div></div><span class="category-badge badge-blue">funding, employees, industry</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Code Examples -->
+<section class="code-section" id="examples">
+  <div class="container">
+    <div class="section-header">
+      <h2>3 Lines to Live Data</h2>
+      <p>Import, call, use. Every recipe follows the same interface — <code>url</code> in, structured <code>dict</code> out.</p>
+    </div>
+
+    <pre><span class="code-comment"># 1. Amazon — product title, price, rating</span>
+<span class="code-keyword">from</span> recipes.amazon_product <span class="code-keyword">import</span> <span class="code-func">scrape_amazon_product</span>
+data = <span class="code-func">scrape_amazon_product</span>(<span class="code-string">"https://amazon.com/dp/B0EXAMPLE"</span>)
+<span class="code-func">print</span>(data[<span class="code-string">"title"</span>], data[<span class="code-string">"price"</span>])  <span class="code-comment"># "Widget Pro" "$29.99"</span></pre>
+
+    <pre style="margin-top: 16px;"><span class="code-comment"># 2. YouTube — video views, likes, channel</span>
+<span class="code-keyword">from</span> recipes.youtube_video <span class="code-keyword">import</span> <span class="code-func">scrape_youtube_video</span>
+data = <span class="code-func">scrape_youtube_video</span>(<span class="code-string">"https://youtube.com/watch?v=dQw4w9WgXcQ"</span>)
+<span class="code-func">print</span>(<span class="code-string">f"</span>{data[<span class="code-string">'title'</span>]}<span class="code-string"> — </span>{data[<span class="code-string">'views'</span>]}<span class="code-string"> views, </span>{data[<span class="code-string">'likes'</span>]}<span class="code-string"> likes"</span>)</pre>
+
+    <pre style="margin-top: 16px;"><span class="code-comment"># 3. Reddit — scrape posts from any subreddit</span>
+<span class="code-keyword">from</span> recipes.reddit_posts <span class="code-keyword">import</span> <span class="code-func">scrape_reddit_posts</span>
+data = <span class="code-func">scrape_reddit_posts</span>(<span class="code-string">"https://reddit.com/r/Python/hot"</span>)
+<span class="code-keyword">for</span> post <span class="code-keyword">in</span> data[<span class="code-string">"posts"</span>]:
+    <span class="code-func">print</span>(<span class="code-string">f"</span>{post[<span class="code-string">'score'</span>]}<span class="code-string"> ↑ </span>{post[<span class="code-string">'title'</span>]}")</pre>
+  </div>
+</section>
+
+<!-- Products Cross-Promotion -->
+<section class="products" id="products">
+  <div class="container">
+    <div class="section-header">
+      <h2>From Recipes to Revenue</h2>
+      <p>The cookbook is just the beginning. These micro-SaaS products turn scraping into a business.</p>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-icon">⚡</div>
+        <div class="product-name">WebExtract Pro</div>
+        <div class="product-price">€9<small>/mo</small></div>
+        <div class="product-desc">Turn any URL into structured JSON. Built on the same Scrapling engine as the cookbook — adaptive selectors, headless browser, API-first. Drop in a URL, get clean data.</div>
+        <span class="status">Coming Soon</span>
+      </div>
+      <div class="product-card">
+        <div class="product-icon">🔄</div>
+        <div class="product-name">Content Repurposer</div>
+        <div class="product-price">€15<small> one-time</small></div>
+        <div class="product-desc">Scrape an article, blog, or thread → transform it into 5 formats: Twitter thread, LinkedIn post, newsletter, video script, Instagram caption. AI-powered, one click.</div>
+        <span class="status">Coming Soon</span>
+      </div>
+      <div class="product-card">
+        <div class="product-icon">👁️</div>
+        <div class="product-name">Site Watcher</div>
+        <div class="product-price">€7<small>/mo</small></div>
+        <div class="product-desc">Monitor any website for changes. Price drops, new listings, job postings, competitor updates. Get alerts via email, Slack, or webhook. Never miss a beat.</div>
+        <span class="status">Coming Soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p><strong>Scrapling Cookbook</strong> — 23 scraping recipes for the sites you actually need.</p>
+    <p style="margin-top: 8px;">
+      <a href="https://github.com/noxx777-lab/scrapling-cookbook">GitHub</a> &middot;
+      Built with <a href="https://github.com/nousresearch/hermes-agent">Hermes Agent</a> &middot;
+      €19 one-time &middot; <a href="mailto:noxx777@proton.me">Contact</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
