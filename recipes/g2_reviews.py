@@ -1,4 +1,4 @@
-"""G2 product review scraper — extracts rating, reviews count, pros/cons."""
+"""G2 product review scraper — extracts rating, reviews count, pros/cons, pricing."""
 from scrapling.fetchers import StealthyFetcher
 
 def scrape_g2_reviews(url: str) -> dict:
@@ -11,4 +11,6 @@ def scrape_g2_reviews(url: str) -> dict:
         "description": page.css('[class*="description"] p::text, [class*="overview"]::text').get(default='').strip(),
         "categories": page.css('[class*="category"] a::text, [class*="breadcrumb"] a::text').getall(),
         "pricing": page.css('[class*="pricing"] ::text').get(default='').strip(),
+        "pros": page.css('[class*="pros"] li::text, [class*="pro"] li::text').getall(),
+        "cons": page.css('[class*="cons"] li::text, [class*="con"] li::text').getall(),
     }

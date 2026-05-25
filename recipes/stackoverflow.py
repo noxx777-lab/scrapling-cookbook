@@ -1,13 +1,22 @@
-"""StackOverflow question scraper — title, votes, answers, tags."""
-from scrapling.fetchers import Fetcher
+"""StackOverflow question scraper — extracts title, question body, answers, tags, votes."""
+from scrapling.fetchers import StealthyFetcher
 
 def scrape_stackoverflow_question(url: str) -> dict:
-    page = Fetcher.get(url, headers={"User-Agent": "Mozilla/5.0"})
+    StealthyFetcher.adaptive = True
+    page = StealthyFetcher.fetch(url, headless=True, network_idle=True)
+    answers = []
+    for ans in page.css('.answer'):
+        answers.append({
+            "body": ans.css('.s-prose, .answercell .js-post-body::text').get(default='').strip()[:500],
+            "votes": ans.css('.js-vote-count::text, [class*="vote"] span::text').get(default='').strip(),
+            "accepted": bool(ans.css('.accepted-answer')),
+        })
     return {
-        "title": page.css('h1 a::text').get(default='').strip(),
-        "votes": page.css('.js-vote-count::attr(data-value)').get(default='0').strip(),
-        "question": page.css('.question .js-post-body, #question .s-prose').get(default='').strip()[:300],
-        "answers_count": page.css('[itemprop="answerCount"]::text, #answers-header h2::attr(data-answercount)').get(default='0').strip(),
+        "title": page.css('h1 a.question-hyperlink::text, h1::text').get(default='').strip(),
+        "body": page.css('.question .s-prose::text, .js-post-body::text').get(default='').strip()[:500],
         "tags": page.css('.post-tag::text').getall(),
-        "views": page.css('[title*="views"]::text').get(default='').strip(),
+        "votes": page.css('.js-vote-count::text, [class*="vote-count"]::text').get(default='').strip(),
+        "answers_count": len(answers),
+        "answers": answers,
+        "views": page.css('[class*="views"]::attr(title), [class*="views"] span::text').get(default='').strip(),
     }

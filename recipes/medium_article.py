@@ -1,12 +1,15 @@
-"""Medium article scraper — title, author, claps, reading time."""
-from scrapling.fetchers import Fetcher
+"""Medium article scraper — extracts title, author, claps, reading time, content preview."""
+from scrapling.fetchers import StealthyFetcher
 
 def scrape_medium_article(url: str) -> dict:
-    page = Fetcher.get(url, headers={"User-Agent": "Mozilla/5.0"})
+    StealthyFetcher.adaptive = True
+    page = StealthyFetcher.fetch(url, headless=True, network_idle=True)
     return {
-        "title": page.css('h1::text').get(default='').strip(),
-        "author": page.css('[data-testid="authorName"]::text, a[rel="author"]::text').get(default='').strip(),
-        "reading_time": page.css('span.readingTime::text').get(default='').strip(),
-        "published_date": page.css('[data-testid="storyPublishDate"]::text, time::text').get(default='').strip(),
-        "content_preview": page.css('article p::text').get(default='')[:500].strip(),
+        "title": page.css('h1::text, [data-testid="storyTitle"]::text').get(default='').strip(),
+        "author": page.css('a[href*="/@"] p::text, [class*="author"] a::text').get(default='').strip(),
+        "claps": page.css('[class*="clap"] button::text, [data-testid="clapCount"]::text').get(default='').strip(),
+        "reading_time": page.css('[class*="readingTime"]::text, [data-testid="readingTime"]::text').get(default='').strip(),
+        "published": page.css('[class*="publish"] span::text, time::text').get(default='').strip(),
+        "content_preview": page.css('article p::text, section p::text').get(default='').strip()[:500],
+        "tags": page.css('a[href*="/tag/"]::text, [class*="tag"] a::text').getall(),
     }
