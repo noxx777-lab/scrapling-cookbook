@@ -2,7 +2,7 @@
 from scrapling.fetchers import Fetcher
 
 def scrape_stackoverflow_question(url: str) -> dict:
-    page = Fetcher.fetch(url, headers={"User-Agent": "Mozilla/5.0"})
+    page = Fetcher.get(url, headers={"User-Agent": "Mozilla/5.0"})
     return {
         "title": page.css('h1 a::text').get(default='').strip(),
         "votes": page.css('.js-vote-count::attr(data-value)').get(default='0').strip(),

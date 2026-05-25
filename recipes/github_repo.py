@@ -2,7 +2,7 @@
 from scrapling.fetchers import Fetcher
 
 def scrape_github_repo(url: str) -> dict:
-    page = Fetcher.fetch(url)
+    page = Fetcher.get(url)
     
     return {
         "name": page.css('strong[itemprop="name"] a::text').get(default='').strip(),

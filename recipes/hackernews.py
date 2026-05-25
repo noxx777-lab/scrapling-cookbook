@@ -1,15 +1,21 @@
-"""Hacker News scraper — front page posts, scores, comment counts."""
+"""Hacker News scraper — front page posts, scores, authors."""
 from scrapling.fetchers import Fetcher
 
 def scrape_hackernews(url: str = "https://news.ycombinator.com") -> list[dict]:
-    page = Fetcher.fetch(url)
+    page = Fetcher.get(url)
     posts = []
-    for row in page.css('.athing'):
+    
+    # Get all titles and URLs
+    titles = page.css('.titleline a::text').getall()
+    urls = page.css('.titleline a::attr(href)').getall()
+    scores = page.css('.score::text').getall()
+    authors = page.css('.hnuser::text').getall()
+    
+    for i, title in enumerate(titles):
         posts.append({
-            "title": row.css('.titleline a::text').get(default='').strip(),
-            "url": row.css('.titleline a::attr(href)').get(default='').strip(),
-            "score": row.css('+ tr .score::text').get(default='0').strip(),
-            "author": row.css('+ tr .hnuser::text').get(default='').strip(),
-            "comments": row.css('+ tr a[href*="item"]::text').getall(),
+            "title": title.strip(),
+            "url": urls[i] if i < len(urls) else "",
+            "score": scores[i].strip() if i < len(scores) else "0",
+            "author": authors[i].strip() if i < len(authors) else "",
         })
     return posts

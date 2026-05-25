@@ -2,7 +2,7 @@
 from scrapling.fetchers import Fetcher
 
 def scrape_youtube_video(url: str) -> dict:
-    page = Fetcher.fetch(url, headers={"User-Agent": "Mozilla/5.0"})
+    page = Fetcher.get(url, headers={"User-Agent": "Mozilla/5.0"})
     return {
         "title": page.css('title::text').get(default='').replace(' - YouTube', '').strip(),
         "views": page.css('meta[itemprop="interactionCount"]::attr(content)').get(default='').strip(),

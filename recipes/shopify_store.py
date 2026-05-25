@@ -4,7 +4,7 @@ import json
 
 def scrape_shopify_products(store_url: str) -> list[dict]:
     """Scrape all products from a Shopify store via products.json API."""
-    page = Fetcher.fetch(f"{store_url.rstrip('/')}/products.json")
+    page = Fetcher.get(f"{store_url.rstrip('/')}/products.json")
     data = json.loads(page.css('body::text').get(default='[]'))
     return [{
         "title": p.get("title", ""),

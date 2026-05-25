@@ -2,7 +2,7 @@
 from scrapling.fetchers import Fetcher
 
 def scrape_medium_article(url: str) -> dict:
-    page = Fetcher.fetch(url, headers={"User-Agent": "Mozilla/5.0"})
+    page = Fetcher.get(url, headers={"User-Agent": "Mozilla/5.0"})
     return {
         "title": page.css('h1::text').get(default='').strip(),
         "author": page.css('[data-testid="authorName"]::text, a[rel="author"]::text').get(default='').strip(),

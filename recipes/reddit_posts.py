@@ -2,7 +2,7 @@
 from scrapling.fetchers import Fetcher
 
 def scrape_reddit_posts(subreddit_url: str) -> list[dict]:
-    page = Fetcher.fetch(subreddit_url, headers={"User-Agent": "Mozilla/5.0"})
+    page = Fetcher.get(subreddit_url, headers={"User-Agent": "Mozilla/5.0"})
     
     posts = []
     for post in page.css('article, .thing, shreddit-post'):

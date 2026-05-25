@@ -2,7 +2,7 @@
 from scrapling.fetchers import Fetcher
 
 def scrape_wikipedia(url: str) -> dict:
-    page = Fetcher.fetch(url)
+    page = Fetcher.get(url)
     
     return {
         "title": page.css('#firstHeading::text').get(default='').strip(),
